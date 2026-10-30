@@ -20,3 +20,10 @@
 
 /* Keep the complete symbol legible against the dark footer. */
 .site-footer .footer-brand .brand img{filter:brightness(0) invert(1)}
+
+
+
+/* Small glints reappear in different places, leaving the headline clear. */
+.mala-twinkles{position:absolute;inset:0;pointer-events:none}.mala-twinkles i{position:absolute;left:var(--spark-x,80%);top:var(--spark-y,30%);width:var(--spark-size,15px);height:var(--spark-size,15px);opacity:0;transform:scale(.35) rotate(-12deg);color:var(--spark-color,#61cfc0);filter:drop-shadow(0 0 6px currentColor);will-change:opacity,transform}.mala-twinkles i:before{content:'';position:absolute;inset:0;background:currentColor;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}.mala-twinkles i:after{content:'';position:absolute;left:43%;top:43%;width:14%;height:14%;border-radius:50%;background:#f2fffc;box-shadow:0 0 6px #ffffff80}.mala-twinkles i.is-pulsing{animation:mala-twinkle var(--spark-duration,4s) ease-in-out both}
+@keyframes mala-twinkle{0%,100%{opacity:0;transform:scale(.35) rotate(-12deg)}45%,55%{opacity:.72;transform:scale(1) rotate(8deg)}}
+@media(prefers-reduced-motion:reduce){.mala-twinkles i{animation:none!important;will-change:auto;opacity:.25;transform:scale(.75)}}

@@ -45,6 +45,51 @@
     }, { passive: true });
   }
 
+  // Each pulse moves only while invisible; positions stay over the hero photograph.
+  const twinkles = $$('.mala-twinkles i');
+  const sparkleColours = ['#6ddac3', '#65cbdc', '#9aace3', '#b8ece0'];
+  const sparkleTimers = new Map();
+  function placeTwinkle(spark, index) {
+    const mobile = window.matchMedia('(max-width: 760px)').matches;
+    const x = mobile ? 14 + Math.random() * 76 : 64 + Math.random() * 31;
+    const photoHeight = Math.min(280, Math.max(180, hero.clientHeight * .27));
+    const y = mobile ? hero.clientHeight - photoHeight + Math.random() * (photoHeight - 35) : hero.clientHeight * (.16 + Math.random() * .66);
+    spark.style.setProperty('--spark-x', x + '%');
+    spark.style.setProperty('--spark-y', y + 'px');
+    spark.style.setProperty('--spark-size', (mobile ? 10 + Math.random() * 7 : 12 + Math.random() * 11) + 'px');
+    spark.style.setProperty('--spark-color', sparkleColours[index % sparkleColours.length]);
+    spark.style.setProperty('--spark-duration', (3.2 + Math.random() * 2) + 's');
+  }
+  function runTwinkle(spark, index) {
+    if (reduced.matches || document.hidden) return;
+    placeTwinkle(spark, index);
+    spark.classList.add('is-pulsing');
+  }
+  function scheduleTwinkle(spark, index, delay) {
+    clearTimeout(sparkleTimers.get(spark));
+    sparkleTimers.set(spark, setTimeout(() => runTwinkle(spark, index), delay));
+  }
+  twinkles.forEach((spark, index) => {
+    placeTwinkle(spark, index);
+    spark.addEventListener('animationend', () => {
+      spark.classList.remove('is-pulsing');
+      scheduleTwinkle(spark, index, 250 + Math.random() * 1400);
+    });
+    if (!reduced.matches) scheduleTwinkle(spark, index, index * 850);
+  });
+  function restartTwinkles() {
+    twinkles.forEach((spark, index) => {
+      clearTimeout(sparkleTimers.get(spark));
+      spark.classList.remove('is-pulsing');
+      if (!document.hidden && !reduced.matches) scheduleTwinkle(spark, index, 150 + index * 700);
+    });
+  }
+  reduced.addEventListener('change', restartTwinkles);
+  document.addEventListener('visibilitychange', restartTwinkles);
+  window.matchMedia('(max-width: 760px)').addEventListener('change', () => {
+    twinkles.forEach((spark, index) => placeTwinkle(spark, index));
+  });
+
   const content = window.MALA_CONTENT || { reviews: [], videos: [], mediaIsReference: true };
   $$('[data-reference-label]').forEach(label => { label.hidden = !content.mediaIsReference; });
   if (content.comparison) {
